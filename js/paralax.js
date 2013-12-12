@@ -24,7 +24,7 @@
         this.bindEvent = function () {
             //console.log($(el).width());
             //Наведение на контейнер
-            this.addEvent('mouseover', el, paralax.action.over);
+            this.addEvent('mouseenter', el, paralax.action.over);
         }
 
         /*
