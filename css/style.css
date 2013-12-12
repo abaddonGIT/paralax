@@ -1,2 +1,16 @@
-body {
+#wool-paralax {
+    width: 1600px;
+    height: 600px;
+    position: relative;
+    overflow: hidden;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.wool-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    text-align: center;
+    width: 100%;
 }
