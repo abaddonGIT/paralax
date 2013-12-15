@@ -92,10 +92,10 @@
                             '-moz-transition: -moz-transform 1s easy;' +
                             '-ms-transition: -ms-transform 1s easy;' +
                             '-o-transition: -o-transform 1s easy;' +
-                            '-moz-transform: translate3d(' + blockLeft * mod + 'px, ' + blockTop + 'px, 0px);' +
-                            '-ms-transform: translate3d(' + blockLeft * mod + 'px, ' + blockTop + 'px, 0px);' +
-                            '-o-transform: translate3d(' + blockLeft * mod + 'px, ' + blockTop + 'px, 0px);' +
-                            '-webkit-transform: translate3d(' + blockLeft * mod + 'px, ' + blockTop + 'px, 0px)';
+                            '-moz-transform: translate3d(' + blockLeft * mod + 'px, ' + blockTop * mod + 'px, 0px);' +
+                            '-ms-transform: translate3d(' + blockLeft * mod + 'px, ' + blockTop * mod + 'px, 0px);' +
+                            '-o-transform: translate3d(' + blockLeft * mod + 'px, ' + blockTop * mod + 'px, 0px);' +
+                            '-webkit-transform: translate3d(' + blockLeft * mod + 'px, ' + blockTop * mod + 'px, 0px)';
             }
 
             return cssString;
