@@ -17,31 +17,32 @@
         $el = $(el);
 
         this.init = function () {
+            this.declareVars();
             this.bindEvent();
+        };
+
+        /*
+        * Объевление переменных
+        */
+        this.declareVars = function () {
+             //Находим все внутренние блоки
+             if (!blocks) {
+                blocks = d.querySelectorAll(options.layerClass);
+                ln = blocks.length;
+             }
         };
         /*
         * Вешает события
         */
         this.bindEvent = function () {
-            //console.log($(el).width());
             //Наведение на контейнер
-            this.addEvent('mouseenter', el, paralax.action.over);
+            this.addEvent('mousemove', el, paralax.action.move);
         }
 
         /*
         * Действия
         */
         this.action = {
-            over: function (e) {
-                //Находим все внутренние блоки
-                if (!blocks) {
-                    blocks = d.querySelectorAll(options.layerClass);
-                    ln = blocks.length;
-                }
-
-                //регистрируем событие перемещения
-                paralax.addEvent('mousemove', this, paralax.action.move);
-            },
             move: function (e) {
                 //находим координаты мыши
                 var cords = paralax.getXY(e), blockLeft, blockTop;
