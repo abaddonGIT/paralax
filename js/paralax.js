@@ -9,6 +9,7 @@
     var w = window, d = document, $W = $(w), $D = $(d), $el = null,
         blocks = null,
         ln = null,
+    //размеры окна
         innerWidth = w.innerWidth || d.documentElement.clientWidth,
         innerHeight = w.innerHeight || d.documentElement.clientHeight;
 
@@ -42,21 +43,28 @@
                 paralax.addEvent('mousemove', this, paralax.action.move);
             },
             move: function (e) {
-                var cordX = e.offsetX,
-                    cordY = e.offsetY;
+                //находим координаты мыши
+                var cords = paralax.getXY(e), blockLeft, blockTop;
 
-                var left = 100 * cordX / 1600,
-                    top = 100 * cordY / 600,
-                    ratX = options.rationX;
-                //console.log(marginLeft);
-                //magic
+                //Проходим по всем словам
                 for (var i = 0; i < ln; i++) {
-                    var loc = blocks[i], marginLeft = cordX * ratX, marginTop = cordY * ratX;
-                    loc.style.cssText = 'left:' + left + 'px; margin-left: -' + marginLeft + 'px; top:' + top + 'px; margin-top: -' + marginTop + 'px;';
-                    ratX = ratX + 0.02;
-                    /*top = $(loc).position().top,
-                    left = $(loc).position().left;
-                    */
+                    var loc = blocks[i],
+                        shift = loc.getAttribute('data-shift'); //коэффициет сдвига
+
+                    //Смещение по x
+                    blockLeft = shift * (0.5 * innerWidth - cords.mouseX);
+                    //Смешение по y
+                    blockTop = shift * (0.5 * innerHeight - cords.mouseY);
+
+                    if (options.differentSides) {
+                        if (i % 2 === 0) {
+                            loc.style.cssText = 'left:' + blockLeft + 'px;' + 'top:' + blockTop + 'px;';
+                        } else {
+                            loc.style.cssText = 'left: -' + blockLeft + 'px;' + 'top: -' + blockTop + 'px;';
+                        }
+                    } else {
+                        loc.style.cssText = 'left:' + blockLeft + 'px;' + 'top:' + blockTop + 'px;';
+                    }
                 }
             }
         };
@@ -73,12 +81,27 @@
         }, false);
     };
 
+    /*
+    * Получение координат мыши
+    */
+    Paralax.prototype.getXY = function (e) {
+        //если IE 
+        if (!e.pageX) {
+            var html = d.documentElement;
+            var body = d.body;
+
+            e.pageX = e.clientX + (html && html.scrollLeft || body && body.scrollLeft || 0) - (html.clientLeft || 0);
+            e.pageY = e.clientY + (html && html.scrollTop || body && body.scrollTop || 0) - (html.clientTop || 0);
+        }
+
+        return { 'mouseX': e.pageX, 'mouseY': e.pageY };
+    };
 
     $.fn.woolParalax = function (options) {
         //Дефолтовые настройки
         var defOption = {
             'layerClass': '.wool-layer',
-            'rationX': 0.1
+            'differentSides': true//Если установлено в true то четные и нечетные слои будут двигаться в разные чтороны
         };
 
         $.extend(defOption, options);
