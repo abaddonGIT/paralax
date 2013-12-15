@@ -6,7 +6,8 @@
 /*global window, $, jQuery, document */
 (function ($) {
     "use strict";
-    var w = window, d = document, $W = $(w), $D = $(d), $el = null,
+    var w = window, d = document, $W = $(w), $D = $(d), $el = null, that = null,
+        support,
         blocks = null,
         ln = null,
     //размеры окна
@@ -15,6 +16,7 @@
 
     var Paralax = function (el, options) {
         $el = $(el);
+        that = el;
 
         this.init = function () {
             this.declareVars();
@@ -25,11 +27,15 @@
         * Объевление переменных
         */
         this.declareVars = function () {
-             //Находим все внутренние блоки
-             if (!blocks) {
+            //Определяем поддержывает ли браузер свойство transition
+            var thisStyle = that.style;
+            support = thisStyle.transition !== undefined || thisStyle.WebkitTransition !== undefined || thisStyle.MozTransition !== undefined || thisStyle.MsTransition !== undefined || thisStyle.OTransition !== undefined;
+
+            //Находим все внутренние блоки
+            if (!blocks) {
                 blocks = d.querySelectorAll(options.layerClass);
                 ln = blocks.length;
-             }
+            }
         };
         /*
         * Вешает события
@@ -59,15 +65,40 @@
 
                     if (options.differentSides) {
                         if (i % 2 === 0) {
-                            loc.style.cssText = 'left:' + blockLeft + 'px;' + 'top:' + blockTop + 'px;';
+                            loc.style.cssText = paralax.getCssString(blockLeft, blockTop);
                         } else {
-                            loc.style.cssText = 'left: -' + blockLeft + 'px;' + 'top: -' + blockTop + 'px;';
+                            loc.style.cssText = paralax.getCssString(blockLeft, blockTop, -1);
                         }
                     } else {
-                        loc.style.cssText = 'left:' + blockLeft + 'px;' + 'top:' + blockTop + 'px;';
+                        loc.style.cssText = paralax.getCssString(blockLeft, blockTop);
                     }
                 }
             }
+        };
+        /*
+        * Формирует css строку
+        */
+        this.getCssString = function (blockLeft, blockTop, mod) {
+            var cssString = '';
+
+            if (mod === undefined) {
+                mod = 1;
+            }
+
+            if (!support) {
+                cssString = 'left:' + blockLeft + 'px;' + 'top:' + blockTop + 'px;';
+            } else {
+                cssString = '-webkit-transition: -webkit-transform 1s easy;' +
+                            '-moz-transition: -moz-transform 1s easy;' +
+                            '-ms-transition: -ms-transform 1s easy;' +
+                            '-o-transition: -o-transform 1s easy;' +
+                            '-moz-transform: translate3d(' + blockLeft * mod + 'px, ' + blockTop + 'px, 0px);' +
+                            '-ms-transform: translate3d(' + blockLeft * mod + 'px, ' + blockTop + 'px, 0px);' +
+                            '-o-transform: translate3d(' + blockLeft * mod + 'px, ' + blockTop + 'px, 0px);' +
+                            '-webkit-transform: translate3d(' + blockLeft * mod + 'px, ' + blockTop + 'px, 0px)';
+            }
+
+            return cssString;
         };
 
         var paralax = this;
