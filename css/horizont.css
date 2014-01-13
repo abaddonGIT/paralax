@@ -1,9 +1,10 @@
-.wool-layer {
-	position: fixed;
-	width: 100%;
-	height: 100%;
-	left: 0;
-	top: 0;
+body {
+    margin: 0;
+    padding: 0;
 }
 
-
+.wool-layer {
+	position: relative;
+	width: 100%;
+	height: 100%;
+}

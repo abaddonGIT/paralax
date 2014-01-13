@@ -12,7 +12,7 @@
         config = {},
         blocks = null,
         ln = null,
-        //размеры окна
+    //размеры окна
         innerWidth = null,
         innerHeight = null;
 
@@ -25,7 +25,7 @@
     };
 
     //Что-то типа абстрактного класса
-    var GetParalax = function () {};
+    var GetParalax = function () { };
 
     //Описываем необходимые методы
     GetParalax.prototype.init = function (el, options) {
@@ -37,7 +37,7 @@
         config = options;
         innerWidth = w.innerWidth || d.documentElement.clientWidth,
         innerHeight = w.innerHeight || d.documentElement.clientHeight;
-        
+
         if (!blocks) {
             blocks = d.querySelectorAll(config.layerClass);
             ln = blocks.length;
@@ -45,7 +45,7 @@
         this.go();
     };
 
-    GetParalax.prototype.go = function () {};
+    GetParalax.prototype.go = function () { };
     /*
     * Получение координатов мыши
     */
@@ -60,7 +60,7 @@
         }
         return { 'mouseX': e.pageX, 'mouseY': e.pageY };
     };
-    
+
     /*
     * Регистрирует событие
     */
@@ -150,7 +150,14 @@
     //Для горизонтального паралакса
     var HorizontParalaxStr = function () {
         this.go = function () {
-            
+            if (config.autoHeight) {
+                for (var i = 0; i < ln; i++) {
+                    var loc = blocks[i],
+                        img = loc.getAttribute('data-img');
+
+                    loc.style.cssText += 'height: ' + innerHeight + 'px; background: url(' + img +') 50% 0 fixed; background-size: cover;';
+                }
+            }
         }
     };
 
@@ -159,7 +166,7 @@
     $.fn.woolParalax = function (options) {
         //Дефолтовые настройки
         var defOption = {
-            'type': 'none',//none, horizont, vertical
+            'type': 'none', //none, horizont, vertical
             'autoHeight': true,
             'layerClass': '.wool-layer',
             'contentClass': '.wool-layer-content',
@@ -172,8 +179,8 @@
 
             switch (defOption.type) {
                 case 'none':
-                    var paralax = new Paralax(new BaseParalaxStr());   
-                    paralax.start(this, defOption); 
+                    var paralax = new Paralax(new BaseParalaxStr());
+                    paralax.start(this, defOption);
                     break;
                 case 'horizont':
                     var paralax = new Paralax(new HorizontParalaxStr());
