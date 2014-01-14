@@ -10,6 +10,7 @@
         support,
         queryApi,
         config = {},
+        sprites = {},
         blocks = null,
         ln = null,
     //размеры окна
@@ -148,20 +149,57 @@
     BaseParalaxStr.prototype = Object.create(GetParalax.prototype);
 
     //Для горизонтального паралакса
-    var HorizontParalaxStr = function () {
+    var VerticalParalaxStr = function () {
         this.go = function () {
+            var spLen = 0;
+            //остальные подвижные элементы
+            sprites = d.querySelectorAll('[data-type="floating"]');
+            spLen = sprites.length;
+
+            //сохраняем начальное положение элементов
+            while(spLen--) {
+                var spLoc = sprites[ln];
+                spLoc.offset = $(spLoc).offset();
+            }
+
             if (config.autoHeight) {
                 for (var i = 0; i < ln; i++) {
                     var loc = blocks[i],
                         img = loc.getAttribute('data-img');
 
-                    loc.style.cssText += 'height: ' + innerHeight + 'px; background: url(' + img +') 50% 0 fixed; background-size: cover;';
+                    loc.style.cssText += 'height: ' + innerHeight + 'px; background: url(' + img +') 50% 0 fixed;';
                 }
             }
+
+            this.addEvent('scroll',d, vertical.scroll);
         }
+
+        this.scroll = function (e) {
+            for (var i = 0; i < ln; i++) {
+                var loc = blocks[i],
+                    offsetTop = loc.offsetTop;
+
+                if ( ($W.scrollTop() + innerHeight) > (offsetTop) && ((offsetTop + $(loc).height()) > $W.scrollTop())) {
+                    var yPos = -($W.scrollTop() / $(loc).data('shift')); 
+                
+                    if ($(loc).data('offsety')) {
+                        yPos += $(loc).data('offsety');
+                    }
+                
+                    var coords = '50% '+ yPos + 'px';
+                    $(loc).css({ backgroundPosition: coords });
+
+
+                }
+
+                //Анимируем внутренние части
+            }
+        };
+
+        var vertical = this;
     };
 
-    HorizontParalaxStr.prototype = Object.create(GetParalax.prototype);
+    VerticalParalaxStr.prototype = Object.create(GetParalax.prototype);
 
     $.fn.woolParalax = function (options) {
         //Дефолтовые настройки
@@ -183,7 +221,7 @@
                     paralax.start(this, defOption);
                     break;
                 case 'horizont':
-                    var paralax = new Paralax(new HorizontParalaxStr());
+                    var paralax = new Paralax(new VerticalParalaxStr());
                     paralax.start(this, defOption);
                     break;
             }
