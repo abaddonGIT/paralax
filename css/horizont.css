@@ -17,6 +17,11 @@ body {
 .logo-item {
 	position: absolute;
 	right: 50%;
-	top: 100px;
+	top: 200px;
 	margin-right: -600px;
+    -webkit-transition: top 1s;
+  	-ms-transition: top 1s;
+  	-o-transition: top 1s;
+  	-moz-transition: top 1s;
+  	transition: top 1s;
 }

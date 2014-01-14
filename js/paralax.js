@@ -151,44 +151,56 @@
     //Для горизонтального паралакса
     var VerticalParalaxStr = function () {
         this.go = function () {
-            var spLen = 0;
-            //остальные подвижные элементы
-            sprites = d.querySelectorAll('[data-type="floating"]');
-            spLen = sprites.length;
-
-            //сохраняем начальное положение элементов
-            while(spLen--) {
-                var spLoc = sprites[ln];
-                spLoc.offset = $(spLoc).offset();
-            }
+            var spLen = null, totalHeight = 0;
 
             if (config.autoHeight) {
                 for (var i = 0; i < ln; i++) {
                     var loc = blocks[i],
-                        img = loc.getAttribute('data-img');
+                        img = loc.getAttribute('data-img'),
+                        locSp = loc.querySelectorAll('[data-type="floating"]');
 
-                    loc.style.cssText += 'height: ' + innerHeight + 'px; background: url(' + img +') 50% 0 fixed;';
+                    spLen = locSp.length;
+                    for (var j = 0; j < spLen; j++) {
+                        var spr = locSp[j];
+                        spr.offset = $(spr).offset();
+                    }
+                    loc.style.cssText += 'height: ' + innerHeight + 'px; background: url(' + img + ') 50% 0 fixed;';
+
+                    loc.sprites = locSp;
+                    //console.log(loc.sprites);
                 }
             }
 
-            this.addEvent('scroll',d, vertical.scroll);
+            this.addEvent('scroll', d, vertical.scroll);
         }
 
         this.scroll = function (e) {
             for (var i = 0; i < ln; i++) {
                 var loc = blocks[i],
-                    offsetTop = loc.offsetTop;
+                    offsetTop = loc.offsetTop,
+                    spLen = 0;
 
-                if ( ($W.scrollTop() + innerHeight) > (offsetTop) && ((offsetTop + $(loc).height()) > $W.scrollTop())) {
-                    var yPos = -($W.scrollTop() / $(loc).data('shift')); 
-                
+                if (($W.scrollTop() + innerHeight) > (offsetTop) && ((offsetTop + $(loc).height()) > $W.scrollTop())) {
+                    var yPos = -($W.scrollTop() / $(loc).data('shift'));
+
                     if ($(loc).data('offsety')) {
                         yPos += $(loc).data('offsety');
                     }
-                
-                    var coords = '50% '+ yPos + 'px';
+
+                    var coords = '50% ' + yPos + 'px';
                     $(loc).css({ backgroundPosition: coords });
 
+                    if (loc.sprites) {
+                        spLen = loc.sprites.length;
+                    }
+
+                    for (var j = 0; j < spLen; j++) {
+                        var sprite = loc.sprites[j],
+                            spTop = sprite.offset.top,
+                            yPos = -($W.scrollTop() / $(sprite).data('shift'));
+
+                        sprite.style.top = yPos + spTop + "px";
+                    }
 
                 }
 
