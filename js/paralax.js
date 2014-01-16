@@ -161,8 +161,15 @@
 
                     spLen = locSp.length;
                     for (var j = 0; j < spLen; j++) {
-                        var spr = locSp[j];
-                        spr.offset = $(spr).offset();
+                        var spr = locSp[j],
+                            offY = $(spr).data('offsety');
+
+                        if (offY) {
+                            spr.offset = offY;
+                            spr.style.top = offY + 'px';
+                        } else {
+                            spr.offset = spr.offsetTop;
+                        }
                     }
                     loc.style.cssText += 'height: ' + innerHeight + 'px; background: url(' + img + ') 50% 0 fixed;';
 
@@ -196,12 +203,13 @@
 
                     for (var j = 0; j < spLen; j++) {
                         var sprite = loc.sprites[j],
-                            spTop = sprite.offset.top,
-                            yPos = -($W.scrollTop() / $(sprite).data('shift'));
+                            spTop = sprite.offset,
+                            yPos = -($W.scrollTop() - offsetTop) / $(sprite).data('shift');
 
                         sprite.style.top = yPos + spTop + "px";
+                        
+                        //console.log(($W.scrollTop() - offsetTop) / $(sprite).data('shift'));
                     }
-
                 }
 
                 //Анимируем внутренние части

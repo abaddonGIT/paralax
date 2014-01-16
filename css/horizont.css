@@ -7,6 +7,7 @@ body {
 	position: relative;
 	width: 100%;
 	height: 100%;
+    overflow: hidden;
 	-webkit-transition: background-position 0.2s;
   	-ms-transition: background-position 0.2s;
   	-o-transition: background-position 0.2s;
@@ -24,4 +25,77 @@ body {
   	-o-transition: top 1s;
   	-moz-transition: top 1s;
   	transition: top 1s;
+}
+
+#bear {
+    top: 200px;
+    position: absolute;
+    right: 60%;
+    -webkit-transition: top 1s;
+  	-ms-transition: top 1s;
+  	-o-transition: top 1s;
+  	-moz-transition: top 1s;
+  	transition: top 1s;
+    z-index: 3;
+}
+
+#bany {
+    top: 200px;
+    position: absolute;
+    right: 50%;
+    -webkit-transition: top 1s;
+  	-ms-transition: top 1s;
+  	-o-transition: top 1s;
+  	-moz-transition: top 1s;
+  	transition: top 1s;
+    z-index: 3;  
+}
+
+#wolf {
+    top: 200px;
+    position: absolute;
+    right: 35%;
+    -webkit-transition: top 1s;
+  	-ms-transition: top 1s;
+  	-o-transition: top 1s;
+  	-moz-transition: top 1s;
+  	transition: top 1s;
+    z-index: 3;
+}
+
+#trees {
+    height: 500px;
+    width: 100%;
+    position: absolute;
+    background: url(../img/trees.png) left bottom repeat-x;
+    z-index: 2;
+    -webkit-transition: top 1s;
+  	-ms-transition: top 1s;
+  	-o-transition: top 1s;
+  	-moz-transition: top 1s;
+  	transition: top 1s;
+}
+
+#sun {
+    position: absolute;
+    right: 85%;
+    -webkit-transition: top 1s;
+  	-ms-transition: top 1s;
+  	-o-transition: top 1s;
+  	-moz-transition: top 1s;
+  	transition: top 1s;
+    z-index: 3;
+}
+
+#erth {
+    position: absolute;
+    height: 600px;
+    width: 100%;
+    background: url(../img/bgd.png) left bottom repeat-x;
+    -webkit-transition: top 1s;
+  	-ms-transition: top 1s;
+  	-o-transition: top 1s;
+  	-moz-transition: top 1s;
+  	transition: top 1s;
+    z-index: 1; 
 }
