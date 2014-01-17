@@ -81,6 +81,47 @@
             width: el.outerWidth()
         };
     };
+    /*
+    * Формирует css новое положение блока
+    */
+    GetParalax.prototype.getCssString = function (blockLeft, blockTop, mod) {
+        var cssString = '';
+
+        if (this instanceof BaseParalaxStr) {
+            if (mod === undefined) {
+                mod = 1;
+            }
+
+            if (!support) {
+                cssString = 'left:' + blockLeft + 'px;' + 'top:' + blockTop + 'px;';
+            } else {
+                cssString = '-webkit-transition: -webkit-transform 1s easy;' +
+                            '-moz-transition: -moz-transform 1s easy;' +
+                            '-ms-transition: -ms-transform 1s easy;' +
+                            '-o-transition: -o-transform 1s easy;' +
+                            '-moz-transform: translate3d(' + blockLeft * mod + 'px, ' + blockTop * mod + 'px, 0px);' +
+                            '-ms-transform: translate3d(' + blockLeft * mod + 'px, ' + blockTop * mod + 'px, 0px);' +
+                            '-o-transform: translate3d(' + blockLeft * mod + 'px, ' + blockTop * mod + 'px, 0px);' +
+                            '-webkit-transform: translate3d(' + blockLeft * mod + 'px, ' + blockTop * mod + 'px, 0px)';
+            }
+        }
+
+        if (this instanceof VerticalParalaxStr) {
+            if (!support) {
+                cssString = 'top:' + blockTop + 'px;';
+            } else {
+                cssString = '-webkit-transition: top 1s easy;' +
+                            '-moz-transition: top 1s easy;' +
+                            '-ms-transition: top 1s easy;' +
+                            '-o-transition: top 1s easy;' +
+                            'transition: top 1s;' + 
+                            'top: ' +  blockTop + 'px'; 
+                
+            }  
+        }
+
+        return cssString;
+    };
 
     //Базовая стратегия
     var BaseParalaxStr = function () {
@@ -116,33 +157,6 @@
                 }
             }
         }
-
-        /*
-        * Формирует css строку
-        */
-        this.getCssString = function (blockLeft, blockTop, mod) {
-            var cssString = '';
-
-            if (mod === undefined) {
-                mod = 1;
-            }
-
-            if (!support) {
-                cssString = 'left:' + blockLeft + 'px;' + 'top:' + blockTop + 'px;';
-            } else {
-                cssString = '-webkit-transition: -webkit-transform 1s easy;' +
-                            '-moz-transition: -moz-transform 1s easy;' +
-                            '-ms-transition: -ms-transform 1s easy;' +
-                            '-o-transition: -o-transform 1s easy;' +
-                            '-moz-transform: translate3d(' + blockLeft * mod + 'px, ' + blockTop * mod + 'px, 0px);' +
-                            '-ms-transform: translate3d(' + blockLeft * mod + 'px, ' + blockTop * mod + 'px, 0px);' +
-                            '-o-transform: translate3d(' + blockLeft * mod + 'px, ' + blockTop * mod + 'px, 0px);' +
-                            '-webkit-transform: translate3d(' + blockLeft * mod + 'px, ' + blockTop * mod + 'px, 0px)';
-            }
-
-            return cssString;
-        };
-
         var base = this;
     };
 
@@ -153,9 +167,9 @@
         this.go = function () {
             var spLen = null, totalHeight = 0;
 
-            if (config.autoHeight) {
                 for (var i = 0; i < ln; i++) {
                     var loc = blocks[i],
+                        type = $(loc).data('type'),
                         img = loc.getAttribute('data-img'),
                         locSp = loc.querySelectorAll('[data-type="floating"]');
 
@@ -171,13 +185,22 @@
                             spr.offset = spr.offsetTop;
                         }
                     }
-                    loc.style.cssText += 'height: ' + innerHeight + 'px; background: url(' + img + ') 50% 0 fixed;';
+
+                    if (type === "background") {
+                        loc.style.cssText += '-webkit-transition: background-position 0.2s;' +
+                                            '-ms-transition: background-position 0.2s;' +
+                                            '-o-transition: background-position 0.2s;' +
+                                            '-moz-transition: background-position 0.2s;' +
+                                            'transition: background-position 0.2s;' +
+                                            'background: url(' + img + ') 50% 0 fixed;';
+
+                        if (config.autoHeight) { 
+                            loc.style.height = innerHeight + 'px';
+                        }  
+                    };
 
                     loc.sprites = locSp;
-                    //console.log(loc.sprites);
                 }
-            }
-
             this.addEvent('scroll', d, vertical.scroll);
         }
 
@@ -195,6 +218,7 @@
                     }
 
                     var coords = '50% ' + yPos + 'px';
+
                     $(loc).css({ backgroundPosition: coords });
 
                     if (loc.sprites) {
@@ -205,14 +229,10 @@
                         var sprite = loc.sprites[j],
                             spTop = sprite.offset,
                             yPos = -($W.scrollTop() - offsetTop) / $(sprite).data('shift');
-
-                        sprite.style.top = yPos + spTop + "px";
                         
-                        //console.log(($W.scrollTop() - offsetTop) / $(sprite).data('shift'));
+                        sprite.style.cssText += vertical.getCssString(0, yPos + spTop);
                     }
                 }
-
-                //Анимируем внутренние части
             }
         };
 
