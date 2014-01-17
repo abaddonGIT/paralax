@@ -73,15 +73,6 @@
     };
 
     /*
-    * Определяет размеры блока по контенту
-    */
-    GetParalax.prototype.sizes = function (el) {
-        return sizes = {
-            height: el.outerHeight(),
-            width: el.outerWidth()
-        };
-    };
-    /*
     * Формирует css новое положение блока
     */
     GetParalax.prototype.getCssString = function (blockLeft, blockTop, mod) {
@@ -114,10 +105,18 @@
                             '-moz-transition: top 1s easy;' +
                             '-ms-transition: top 1s easy;' +
                             '-o-transition: top 1s easy;' +
-                            'transition: top 1s;' + 
-                            'top: ' +  blockTop + 'px'; 
-                
-            }  
+                            'transition: top 1s;' +
+                            'top: ' + blockTop + 'px';
+
+            }
+
+            if (mod === "background") {
+                cssString = '-webkit-transition: background-position 0.2s;' +
+                            '-ms-transition: background-position 0.2s;' +
+                            '-o-transition: background-position 0.2s;' +
+                            '-moz-transition: background-position 0.2s;' +
+                            'transition: background-position 0.2s;';
+            }
         }
 
         return cssString;
@@ -167,40 +166,17 @@
         this.go = function () {
             var spLen = null, totalHeight = 0;
 
-                for (var i = 0; i < ln; i++) {
-                    var loc = blocks[i],
+            for (var i = 0; i < ln; i++) {
+                var loc = blocks[i],
                         type = $(loc).data('type'),
-                        img = loc.getAttribute('data-img'),
-                        locSp = loc.querySelectorAll('[data-type="floating"]');
+                        img = loc.getAttribute('data-img');
 
-                    spLen = locSp.length;
-                    for (var j = 0; j < spLen; j++) {
-                        var spr = locSp[j],
-                            offY = $(spr).data('offsety');
-
-                        if (offY) {
-                            spr.offset = offY;
-                            spr.style.top = offY + 'px';
-                        } else {
-                            spr.offset = spr.offsetTop;
-                        }
-                    }
-
-                    if (type === "background") {
-                        loc.style.cssText += '-webkit-transition: background-position 0.2s;' +
-                                            '-ms-transition: background-position 0.2s;' +
-                                            '-o-transition: background-position 0.2s;' +
-                                            '-moz-transition: background-position 0.2s;' +
-                                            'transition: background-position 0.2s;' +
-                                            'background: url(' + img + ') 50% 0 fixed;';
-
-                        if (config.autoHeight) { 
-                            loc.style.height = innerHeight + 'px';
-                        }  
-                    };
-
-                    loc.sprites = locSp;
+                this.prepareSprites(loc);
+                loc.style.cssText += vertical.getCssString(0, 0, "background") + 'background: url(' + img + ') 50% 0 fixed;';
+                if (config.autoHeight) {
+                    loc.style.height = innerHeight + 'px';
                 }
+            }
             this.addEvent('scroll', d, vertical.scroll);
         }
 
@@ -229,11 +205,31 @@
                         var sprite = loc.sprites[j],
                             spTop = sprite.offset,
                             yPos = -($W.scrollTop() - offsetTop) / $(sprite).data('shift');
-                        
+
                         sprite.style.cssText += vertical.getCssString(0, yPos + spTop);
                     }
                 }
             }
+        };
+        /*
+        * Запоменает начальные отступы плавующих элементов внутри секции
+        * @param Object sector - секция
+        */
+        this.prepareSprites = function (sector) {
+            var locSp = sector.querySelectorAll('[data-type="floating"]'),
+                spLen = locSp.length;
+
+            for (var j = 0; j < spLen; j++) {
+                var spr = locSp[j],
+                    offY = $(spr).data('offsety');
+
+                spr.offset = spr.offsetTop;
+
+                if (offY) {
+                    spr.offset += offY;
+                }
+            }
+            sector.sprites = locSp;
         };
 
         var vertical = this;
