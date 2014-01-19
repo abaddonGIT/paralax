@@ -64,6 +64,9 @@
 
     /*
     * Регистрирует событие
+    * @param {String} type - имя события
+    * @param {Object} el - объект дом на которое вашается событие
+    * @param {Function} func - ф-я после отработки события
     */
     GetParalax.prototype.addEvent = function (type, el, func) {
         el.addEventListener(type, function (event) {
@@ -71,7 +74,18 @@
             func.call(this, e);
         }, false);
     };
-
+    /*
+    * Создает элемент dom
+    * @param {String} html - код эелемента
+    * @return {Object}
+    */
+    GetParalax.prototype.createEl = function (html) {
+        var div = d.createElement('div');
+        div.innerHTML = html;
+        var el = div.childNodes[0];
+        div.removeChild(el);
+        return el;
+    };
     /*
     * Формирует css новое положение блока
     */
@@ -101,13 +115,12 @@
             if (!support) {
                 cssString = 'top:' + blockTop + 'px;';
             } else {
-                cssString = '-webkit-transition: top 1s easy;' +
-                            '-moz-transition: top 1s easy;' +
-                            '-ms-transition: top 1s easy;' +
-                            '-o-transition: top 1s easy;' +
-                            'transition: top 1s;' +
-                            'top: ' + blockTop + 'px';
-
+                cssString = '-webkit-transition: top 0.7s;' +
+                            '-moz-transition: top 0.7s;' +
+                            '-ms-transition: top 0.7s;' +
+                            '-o-transition: top 0.7s;' +
+                            'transition: top 0.7s;' +
+                            'top:' + blockTop + 'px;';
             }
 
             if (mod === "background") {
@@ -173,11 +186,16 @@
 
                 this.prepareSprites(loc);
                 loc.style.cssText += vertical.getCssString(0, 0, "background") + 'background: url(' + img + ') 50% 0 fixed;';
-                if (config.autoHeight) {
-                    loc.style.height = innerHeight + 'px';
+                //построение навигации по блокам
+                if (config.layerNav) {
+                    this.createNavigation(loc, i);
                 }
             }
             this.addEvent('scroll', d, vertical.scroll);
+            //Вешаем событие на элемент навигации
+            if (config.layerNav) {
+                $D.on('click', '.wool-nav', vertical.changeSection);
+            }
         }
 
         this.scroll = function (e) {
@@ -208,6 +226,14 @@
 
                         sprite.style.cssText += vertical.getCssString(0, yPos + spTop);
                     }
+
+                    var locTop = offsetTop,
+                        locBot = offsetTop + innerHeight,
+                        passed = $W.scrollTop() + innerHeight * 25 / 100;
+
+                    if (passed > locTop && passed < locBot) {
+                        
+                    }
                 }
             }
         };
@@ -231,6 +257,32 @@
             }
             sector.sprites = locSp;
         };
+        /*
+        * Создает элемент навигации
+        * @param {Object} sector - секция в которую вставляется элемент
+        * @param {Int} i - индекс следующей секции
+        */
+        this.createNavigation = function (sector, i) {
+            var next = blocks[i + 1];
+
+            if (next !== undefined) {
+                var nav = '<a class="wool-nav next" data-slide="' + (i + 1) + '"></a>',
+                   el = this.createEl(nav);
+
+                sector.appendChild(this.createEl(nav));
+            }
+        };
+        /*
+        * Переход к другой секции
+        */
+        this.changeSection = function () {
+            var that = this,
+                slide = that.getAttribute('data-slide'), 
+                offset = blocks[slide].offsetTop;
+
+                $('body, html').animate({ scrollTop: offset }, 1000, 'easeInSine');
+            return false;
+        };
 
         var vertical = this;
     };
@@ -241,7 +293,7 @@
         //Дефолтовые настройки
         var defOption = {
             'type': 'none', //none, horizont, vertical
-            'autoHeight': true,
+            'layerNav': true,
             'layerClass': '.wool-layer',
             'contentClass': '.wool-layer-content',
             'differentSides': true//Если установлено в true то четные и нечетные слои будут двигаться в разные чтороны
