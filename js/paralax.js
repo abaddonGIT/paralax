@@ -295,7 +295,6 @@
             'type': 'none', //none, horizont, vertical
             'layerNav': true,
             'layerClass': '.wool-layer',
-            'contentClass': '.wool-layer-content',
             'differentSides': true//Если установлено в true то четные и нечетные слои будут двигаться в разные чтороны
         };
 
@@ -308,7 +307,7 @@
                     var paralax = new Paralax(new BaseParalaxStr());
                     paralax.start(this, defOption);
                     break;
-                case 'horizont':
+                case 'vertical':
                     var paralax = new Paralax(new VerticalParalaxStr());
                     paralax.start(this, defOption);
                     break;
