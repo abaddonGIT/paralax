@@ -16,7 +16,7 @@ window.onload = function () {
     $('#wool-paralax').woolParalax();
 }
 </pre>
-HTML
+HTML (<a href="http://angular.demosite.pro/paralax/">Demo</div>)
 <pre>
 &lt;div id="wool-paralax">
     &lt;div class="wool-layer" data-shift="0.02"&gt;
@@ -51,7 +51,7 @@ window.onload = function () {
     });
 }
 </pre>
-HTML
+HTML (<a href="http://angular.demosite.pro/paralax/vertical.html">Demo</div>)
 <pre>
 &lt;div id="wool-paralax"&gt;
     &lt;div class="wool-layer" id="first" data-shift="12" data-img="img/brickwall.png"&gt;
@@ -114,7 +114,7 @@ window.onload = function () {
     $('#wool-paralax').woolParalax();
 }
 </pre>
-HTML
+HTML (<a href="http://angular.demosite.pro/paralax/">Demo</div>)
 <pre>
 &lt;div id="wool-paralax">
     &lt;div class="wool-layer" data-shift="0.02"&gt;
@@ -149,7 +149,7 @@ window.onload = function () {
     });
 }
 </pre>
-HTML
+HTML (<a href="http://angular.demosite.pro/paralax/vertical.html">Demo</div>)
 <pre>
 &lt;div id="wool-paralax"&gt;
     &lt;div class="wool-layer" id="first" data-shift="12" data-img="img/brickwall.png"&gt;
